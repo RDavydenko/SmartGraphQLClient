@@ -55,8 +55,8 @@ jobs:
       uses: actions/setup-dotnet@v3
     - name: Build test graphql-server
       run: dotnet build src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --configuration Release
-    - name: Run test graphql-server
-      run: start .\src\SmartGraphQLClient.GraphQLServer\bin\Release\net6.0\SmartGraphQLClient.GraphQLServer.exe
+    - name: Run test graphql-server (background)
+      run: dotnet run src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --no-build --no-restore --configuration Release & # background
     - name: Run tests
       run: dotnet test src/SmartGraphQLClient.Tests/SmartGraphQLClient.Tests.csproj --configuration Release
       

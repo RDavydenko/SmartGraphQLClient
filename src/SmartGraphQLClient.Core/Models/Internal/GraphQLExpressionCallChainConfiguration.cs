@@ -19,11 +19,6 @@ namespace SmartGraphQLClient.Core.Models.Internal
 
         public void AddArgument(ArgumentKeyValuePair arg)
         {
-            if (IsLocalConfigration)
-            {
-                throw new InvalidOperationException("Operation is not supported for local configuring");
-            }
-
             var argument = QueryArguments.FirstOrDefault(x => x.Key == arg.Key);
             if (argument is not null)
             {

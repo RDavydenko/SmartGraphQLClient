@@ -30,8 +30,10 @@ GraphQLHttpClient client = ... // from DI
 
 var users = await client.Query<UserModel>("users")
     .Include(x => x.Roles)
-    .ThenInclude(x => x.Users)
+        .ThenInclude(x => x.Users)
     .Where(x => x.UserName.StartsWith("A") || x.Roles.Any(r => r.Code == RoleCode.ADMINISTRATOR))
+    .OrderBy(x => x.Id)
+      .ThenByDescending(x => x.UserName)
     .Select(x => new 
     {
         x.Id,
@@ -59,6 +61,10 @@ Query-string from example:
           { roles: { some: { code: { eq: ADMINISTRATOR } } } }
         ]
       }
+      order: [
+        { id: ASC }
+        { userName: DESC }
+      ]
       skip: 5
       take: 10
       secretKey: "1234"

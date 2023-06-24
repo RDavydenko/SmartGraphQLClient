@@ -10,7 +10,6 @@
         <Title>SmartGraphQLClient</Title>
         <Authors>RDavydenko</Authors>
         <Description>Back-to-back GraphQL-client using Linq-syntax</Description>
-        <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/RDavydenko/SmartGraphQLClient</RepositoryUrl>
     </PropertyGroup>

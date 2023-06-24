@@ -34,8 +34,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
 
+    - name: Build nuget-package
+      run: dotnet build src/SmartGraphQLClient.Core/SmartGraphQLClient.Core.csproj --configuration Release
     # Create the NuGet package in the folder from the environment variable NuGetDirectory
-    - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }}
+    - run: dotnet pack src/SmartGraphQLClient.Core/SmartGraphQLClient.Core.csproj --configuration Release --output ${{ env.NuGetDirectory }}
 
     # Publish the NuGet package as an artifact, so they can be used in the following jobs
     - uses: actions/upload-artifact@v3
@@ -51,8 +53,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
+    - name: Build test graphql-server
+      run: dotnet build src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --configuration Release
+    - name: Run test graphql-server (background)
+      run: dotnet run --project src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --no-build --no-restore --configuration Release & # background
     - name: Run tests
-      run: dotnet test --configuration Release
+      run: dotnet test src/SmartGraphQLClient.Tests/SmartGraphQLClient.Tests.csproj --configuration Release
       
   deploy:
       # Publish only when creating a GitHub Release

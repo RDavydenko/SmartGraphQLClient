@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SmartGraphQLClient.Tests.TestsInfrastructure.Services
 {
-    internal class TestAuthorizationService : IGraphQLAuthorizationService<AuthorizedWithRenewTokenGraphQLHttpClient>
+    internal class TestAuthorizationService : IGraphQLAuthorizationService<AuthorizedTestGraphQLHttpClient>
     {
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;

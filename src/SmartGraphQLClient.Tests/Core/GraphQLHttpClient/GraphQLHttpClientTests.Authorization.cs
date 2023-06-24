@@ -61,7 +61,7 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         [TestMethod]
         public async Task AuthorizedQuery_WithAuthorizationService_ShouldBeSuccess()
         {
-            using var client = CreateAuthorizedClientWithAuthorizationService();
+            using var client = CreateAuthorizedClient();
 
             var admins = await client.Query<UserModel>("admins")
                 .ToListAsync();
@@ -80,7 +80,7 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
             Assert.IsTrue(admins.All(x => x.Id != 0));
             Assert.IsTrue(admins.All(x => x.UserName is not null));
 
-            using var client2 = CreateAuthorizedClientWithAuthorizationService();
+            using var client2 = CreateAuthorizedClient();
 
             // the query should use cached token
             admins = await client2.Query<UserModel>("admins")

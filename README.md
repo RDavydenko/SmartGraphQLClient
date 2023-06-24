@@ -101,6 +101,7 @@ Requests were tested on [HotChocolate](https://github.com/ChilliCream/graphql-pl
 |----------------------------|-------------------|----|
 | Build Where-string         | 1.0.0             | ✅ |
 | Build Select-string        | 1.0.0             | ✅ |
+| Build Order-string         | 1.0.0             | ✅ |
 | Offset paging (skip, take) | 1.0.0             | ✅ |
 | Custom arguments           | 1.0.0             | ✅ |
 | Cursor paging              |                   | ❌ |

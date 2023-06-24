@@ -2,8 +2,15 @@
 Back-to-back GraphQL client using Linq-syntax
 
 ## Install NuGet package
-```
+Using Package Manager:
+``` shell
 Install-Package SmartGraphQLClient
+```
+or 
+
+Using .NET CLI:
+``` shell
+dotnet add package SmartGraphQLClient
 ```
 
 ## Usage
@@ -77,20 +84,20 @@ Query-string from example:
 See more examples in unit-tests [directory](https://github.com/RDavydenko/SmartGraphQLClient/tree/master/src/SmartGraphQLClient.Tests/Core/GraphQLHttpClient): 
 1) more requests (`ToListAsync()`, `ToPageAsync()`, `FirstOrDefaultAsync()`)
 2) attributes (`GraphQLEndpointAttribute`, `GraphQLIgnoreAttribute`, `GraphQLPropertyNameAttribute`)
-3) authorized graphql-http-client (constant token and `IGraphQLAuthorizationService<>` for providing tokens in runtime)
+3) authorized graphql-http-client (`IGraphQLAuthorizationService<>` for providing tokens in runtime and cache tokens)
 4) and more
 
 ## Compatibility
 Requests were tested on [HotChocolate](https://github.com/ChilliCream/graphql-platform/) GraphQL-server. See their [documentation](https://chillicream.com/docs/hotchocolate/v13).
 
 ## Features
-| feature's name             |    |
-|----------------------------|----|
-| Build Where-string         | ✅ |
-| Build Select-string        | ✅ |
-| Offset paging (skip, take) | ✅ |
-| Custom arguments           | ✅ |
-| Cursor paging              | ❌ |
+| feature's name             | package's version |    |
+|----------------------------|-------------------|----|
+| Build Where-string         | 1.0.0             | ✅ |
+| Build Select-string        | 1.0.0             | ✅ |
+| Offset paging (skip, take) | 1.0.0             | ✅ |
+| Custom arguments           | 1.0.0             | ✅ |
+| Cursor paging              |                   | ❌ |
 
 ## Links
 https://www.nuget.org/packages/SmartGraphQLClient/

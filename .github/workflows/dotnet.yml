@@ -23,7 +23,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  create_nuget:
+  build_nuget:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -47,26 +47,22 @@ jobs:
         retention-days: 7
         path: ${{ env.NuGetDirectory }}/*.nupkg
 
-  run_test:
+  run_unit_tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
-    - name: Build test graphql-server
-      run: dotnet build src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --configuration Release
-    - name: Run test graphql-server (background)
-      run: dotnet run --project src/SmartGraphQLClient.GraphQLServer/SmartGraphQLClient.GraphQLServer.csproj --no-build --no-restore --configuration Release & # background
     - name: Run tests
       run: dotnet test src/SmartGraphQLClient.Tests/SmartGraphQLClient.Tests.csproj --configuration Release
       
-  deploy:
+  publish_nuget:
       # Publish only when creating a GitHub Release
       # https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
       # You can update this logic if you want to manage releases differently
       if: github.event_name == 'release'
       runs-on: ubuntu-latest
-      needs: [ create_nuget, run_test ]
+      needs: [ build_nuget, run_unit_tests ]
       steps:
         # Download the NuGet package created in the previous job
         - uses: actions/download-artifact@v3

@@ -9,6 +9,7 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
     {
         private SmartGraphQLClient.GraphQLHttpClient CreateClient()
             => ServiceProvider.GetRequiredService<TestGraphQLHttpClient>();
+            
         private SmartGraphQLClient.GraphQLHttpClient CreateAuthorizedClient()
             => ServiceProvider.GetRequiredService<AuthorizedTestGraphQLHttpClient>();
     }

@@ -23,10 +23,8 @@ namespace SmartGraphQLClient.Core.Visitors.Abstractions
 
         protected string FormatFieldName(MemberInfo memberInfo)
             => _fieldNameProvider.GetFieldName(memberInfo);
+        
         protected string FormatValue(object? value)
             => _valueFormatProvider.GetFormattedValue(value);
-
-        protected WrappedEnumerable CreateWrappedEnumerable(IEnumerable enumerable)
-            => new WrappedEnumerable(enumerable, _valueFormatProvider);
     }
 }

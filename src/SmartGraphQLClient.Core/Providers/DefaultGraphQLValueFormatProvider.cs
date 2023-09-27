@@ -13,12 +13,26 @@ namespace SmartGraphQLClient.Core.Providers
 
             if (value is string sValue)
             {
-                return $"\"{sValue}\"";
+                return EscapeStringValue(sValue);
             }
 
             if (value is DateTime dtValue) return dtValue.ToUniversalIso8601();
 
             return value.ToString() ?? string.Empty;
+        }
+
+        private string EscapeStringValue(string value)
+        {
+            value = value
+                .Replace(@"\", @"\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", @"\n")
+                .Replace("\r", @"\r")
+                .Replace("\t", @"\t")
+                .Replace("\0", @"\0")
+                .Replace("\b", @"\b");
+            
+            return $"\"{value}\"";
         }
     }
 }

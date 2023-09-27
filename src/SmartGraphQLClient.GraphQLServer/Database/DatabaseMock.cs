@@ -76,7 +76,7 @@ namespace SmartGraphQLClient.GraphQLServer.Database
                 Id = 4,
                 Code = RoleCode.ADMINISTRATOR,
                 Name = "Administrator",
-                Description = "An administrator is a user with the highest level of authority and control within a platform or community. Administrators have the power to manage the entire system, including user accounts, permissions, and settings. They have access to administrative tools that enable them to configure the platform, add or remove features, and oversee the activities of editors, moderators, and viewers. Administrators often make strategic decisions regarding the platform's direction, user policies, and overall community development. They bear the responsibility of ensuring the platform operates smoothly and efficiently."
+                Description = "An administrator is a user with the highest level of authority and control within a platform or community. Administrators have the \"power\" to manage the entire system, including user accounts, permissions, and settings. They have access to administrative tools that enable them to configure the platform, add or remove features, and oversee the activities of editors, moderators, and viewers. Administrators often make strategic decisions regarding the platform's direction, user policies, and overall community development. They bear the responsibility of ensuring the platform operates smoothly and efficiently."
             };
 
             Roles.AddRange(new[] { role1, role2, role3, role4 });

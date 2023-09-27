@@ -53,5 +53,25 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
             Assert.IsTrue(items.Any());
             Assert.IsTrue(items.All(id => id != 0));
         }
+
+        [TestMethod]
+        public async Task ToListAsync_WhereWithEscapingCharacter_DoubleQuote()
+        {
+            using var client = CreateClient();
+
+            var items = await client.Query<UserModel>("users")
+                .Where(x => x.Roles.Any(r => r.Description.Contains("\"power\"")))
+                .Select(x => new
+                {
+                    EntityId = x.Id,
+                    EntityName = x.UserName
+                })
+                .ToListAsync();
+
+            Assert.IsNotNull(items);
+            Assert.IsTrue(items.Any());
+            Assert.IsTrue(items.All(x => x.EntityId != 0));
+            Assert.IsTrue(items.All(x => x.EntityName is not null));
+        }
     }
 }

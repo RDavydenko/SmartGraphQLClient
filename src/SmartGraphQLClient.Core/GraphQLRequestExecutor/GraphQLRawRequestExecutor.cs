@@ -3,9 +3,9 @@ using SmartGraphQLClient.Core.GraphQLRequestExecutor.Base;
 
 namespace SmartGraphQLClient.Core.GraphQLRequestExecutor;
 
-internal class GraphQLRowRequestExecutor : GraphQLRequestExecutorBase
+internal class GraphQLRawRequestExecutor : GraphQLRequestExecutorBase
 {
-    public GraphQLRowRequestExecutor(
+    public GraphQLRawRequestExecutor(
         IServiceProvider serviceProvider, 
         HttpClient httpClient, 
         Type graphQLClientType)
@@ -13,7 +13,7 @@ internal class GraphQLRowRequestExecutor : GraphQLRequestExecutorBase
     {
     }
     
-    public async Task<T> ExecuteRowQueryAsync<T>(string query, CancellationToken token)
+    public async Task<T> ExecuteRawQueryAsync<T>(string query, CancellationToken token)
     {
         var value = await ExecuteAsync(query, token);
         return value.Deserialize<T>(JsonSerializerOptions)!;

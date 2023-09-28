@@ -159,10 +159,10 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
             return entity ?? throw new InvalidOperationException("Entity is null");
         }
 
-        internal Task<TResult> ExecuteRowQueryAsync<TResult>(string query, CancellationToken token)
+        internal Task<TResult> ExecuteRawQueryAsync<TResult>(string query, CancellationToken token)
         {
             var executor = GetRowRequestExecutor();
-            return executor.ExecuteRowQueryAsync<TResult>(query, token);
+            return executor.ExecuteRawQueryAsync<TResult>(query, token);
         }
         
         protected IGraphQLQueryable<TEntity> Configure(string key, object? value)
@@ -202,9 +202,9 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
             );
         }
 
-        private GraphQLRequestExecutor.GraphQLRowRequestExecutor GetRowRequestExecutor()
+        private GraphQLRequestExecutor.GraphQLRawRequestExecutor GetRowRequestExecutor()
         {
-            return new GraphQLRequestExecutor.GraphQLRowRequestExecutor(
+            return new GraphQLRequestExecutor.GraphQLRawRequestExecutor(
                 ServiceProvider,
                 HttpClient,
                 GpaphQLClientType

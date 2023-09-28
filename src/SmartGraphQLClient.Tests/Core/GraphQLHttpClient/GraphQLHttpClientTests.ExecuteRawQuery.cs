@@ -9,11 +9,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
     public partial class GraphQLHttpClientTests
     {
         [TestMethod]
-        public async Task ExecuteRowQuery_UserById_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_UserById_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var user = await client.ExecuteRowQueryAsync<UserModel>(@"
+            var user = await client.ExecuteRawQueryAsync<UserModel>(@"
                 {
                     user(id: 1) {
                         id
@@ -30,11 +30,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         }
         
         [TestMethod]
-        public async Task ExecuteRowQuery_UserByIdWithCollection_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_UserByIdWithCollection_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var user = await client.ExecuteRowQueryAsync<UserModel>(@"
+            var user = await client.ExecuteRawQueryAsync<UserModel>(@"
                 {
                     user(id: 1) {
                         id
@@ -58,11 +58,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         }
         
         [TestMethod]
-        public async Task ExecuteRowQuery_UsersList_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_UsersList_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var users = await client.ExecuteRowQueryAsync<List<UserModel>>(@"
+            var users = await client.ExecuteRawQueryAsync<List<UserModel>>(@"
                 {
                     users(
                         where: { id: { gt: 1 } }
@@ -85,11 +85,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         }
         
         [TestMethod]
-        public async Task ExecuteRowQuery_UsersArray_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_UsersArray_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var users = await client.ExecuteRowQueryAsync<UserModel[]>(@"
+            var users = await client.ExecuteRawQueryAsync<UserModel[]>(@"
                 {
                     users(
                         where: { id: { gt: 1 } }
@@ -112,11 +112,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         }
         
         [TestMethod]
-        public async Task ExecuteRowQuery_UsersPage_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_UsersPage_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var usersPage = await client.ExecuteRowQueryAsync<CollectionSegment<UserModel>>(@"
+            var usersPage = await client.ExecuteRawQueryAsync<CollectionSegment<UserModel>>(@"
                 {
                     usersPage(
                         where: { id: { gt: 1 } }
@@ -147,11 +147,11 @@ namespace SmartGraphQLClient.Tests.Core.GraphQLHttpClient
         }
         
         [TestMethod]
-        public async Task ExecuteRowQuery_Scalar_ShouldBeSuccess()
+        public async Task ExecuteRawQuery_Scalar_ShouldBeSuccess()
         {
             using var client = CreateClient();
 
-            var integer = await client.ExecuteRowQueryAsync<int>(@"
+            var integer = await client.ExecuteRawQueryAsync<int>(@"
                 {
                     integer(id: 1)
                 }

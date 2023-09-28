@@ -23,8 +23,8 @@ namespace SmartGraphQLClient
         public IGraphQLQueryable<T> Query<T>(string endpoint)
             => new GraphQLQueryable<T>(GetType(), _serviceProvider, HttpClient, endpoint);
 
-        public Task<T> ExecuteRowQueryAsync<T>(string query, CancellationToken token = default)
-            => new GraphQLQueryable<T>(GetType(), _serviceProvider, HttpClient).ExecuteRowQueryAsync<T>(query, token);
+        public Task<T> ExecuteRawQueryAsync<T>(string query, CancellationToken token = default)
+            => new GraphQLQueryable<T>(GetType(), _serviceProvider, HttpClient).ExecuteRawQueryAsync<T>(query, token);
         
         public void Dispose()
         {

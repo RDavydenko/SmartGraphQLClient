@@ -17,14 +17,11 @@ namespace SmartGraphQLClient.Core.GraphQLQueryBuilder
         private IGraphQLOffsetPaginationStringProvider? _offsetPaginationStringProvider;
         private IGraphQLValueFormatProvider? _valueFormatProvider;
 
-        private GraphQLQueryBuilder(
+        public GraphQLQueryBuilder(
             GraphQLQueryBuilderConfiguration config)
         {
             _configuration = config;
         }
-
-        public static GraphQLQueryBuilder New(GraphQLQueryBuilderConfiguration config)
-            => new(config);
 
         public string Build(out GraphQLRequestMetadataConfiguration config)
         {

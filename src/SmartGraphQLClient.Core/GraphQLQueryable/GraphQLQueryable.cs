@@ -129,7 +129,7 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
         protected Task<TEntity[]> ToArrayAsync(GraphQLRequestConfiguration config, CancellationToken token)
         {
             var queryBuilder = GetQueryBuilder(config);
-            var executor = GetRequestExecutor(queryBuilder);
+            var executor = GetDefaultRequestExecutor(queryBuilder);
             return executor.ExecuteToArrayAsync<TEntity>(token);
         }
 
@@ -142,14 +142,14 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
         protected Task<CollectionSegment<TEntity>> ToPageAsync(GraphQLRequestConfiguration config, CancellationToken token)
         {
             var queryBuilder = GetQueryBuilder(config);
-            var executor = GetRequestExecutor(queryBuilder);
+            var executor = GetDefaultRequestExecutor(queryBuilder);
             return executor.ExecuteToPageAsync<TEntity>(token);
         }
 
         protected Task<TEntity?> FirstOrDefaultAsync(GraphQLRequestConfiguration config, CancellationToken token)
         {
             var queryBuilder = GetQueryBuilder(config);
-            var executor = GetRequestExecutor(queryBuilder);
+            var executor = GetDefaultRequestExecutor(queryBuilder);
             return executor.ExecuteFirstOrDefaultAsync<TEntity>(token);
         }
 
@@ -157,6 +157,12 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
         {
             var entity = await FirstOrDefaultAsync(config, token);
             return entity ?? throw new InvalidOperationException("Entity is null");
+        }
+
+        internal Task<TResult> ExecuteRowQueryAsync<TResult>(string query, CancellationToken token)
+        {
+            var executor = GetRowRequestExecutor();
+            return executor.ExecuteRowQueryAsync<TResult>(query, token);
         }
         
         protected IGraphQLQueryable<TEntity> Configure(string key, object? value)
@@ -175,24 +181,34 @@ namespace SmartGraphQLClient.Core.GraphQLQueryable
                 config.Endpoint = Endpoint;
             }
 
-            return GraphQLQueryBuilder.GraphQLQueryBuilder.New(
-                            new GraphQLQueryBuilderConfiguration(
-                                RootEntityType,
-                                CallChain,
-                                Configuration,
-                                ServiceProvider,
-                                config));
+            return new GraphQLQueryBuilder.GraphQLQueryBuilder(
+            new GraphQLQueryBuilderConfiguration(
+                RootEntityType,
+                CallChain,
+                Configuration,
+                ServiceProvider,
+                config)
+            );
         }
 
-        private GraphQLRequestExecutor.GraphQLRequestExecutor GetRequestExecutor(
+        private GraphQLRequestExecutor.GraphQLRequestExecutor GetDefaultRequestExecutor(
             GraphQLQueryBuilder.GraphQLQueryBuilder queryBuilder)
         {
-            return GraphQLRequestExecutor.GraphQLRequestExecutor.New(
+            return new GraphQLRequestExecutor.GraphQLRequestExecutor(
                 ServiceProvider,
                 HttpClient,
                 queryBuilder,
                 GpaphQLClientType
-                );
+            );
+        }
+
+        private GraphQLRequestExecutor.GraphQLRowRequestExecutor GetRowRequestExecutor()
+        {
+            return new GraphQLRequestExecutor.GraphQLRowRequestExecutor(
+                ServiceProvider,
+                HttpClient,
+                GpaphQLClientType
+            );
         }
 
         internal GraphQLQueryable<TEntity> Clone()

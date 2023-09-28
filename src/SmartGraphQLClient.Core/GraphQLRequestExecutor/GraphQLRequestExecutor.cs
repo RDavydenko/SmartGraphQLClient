@@ -1,50 +1,23 @@
-﻿using SmartGraphQLClient.Core.Extensions;
-using SmartGraphQLClient.Core.Models.Internal;
-using SmartGraphQLClient.Core.Services.Abstractions;
+﻿using SmartGraphQLClient.Core.Models.Internal;
 using SmartGraphQLClient.Core.Utils;
-using SmartGraphQLClient.Errors;
-using SmartGraphQLClient.Exceptions;
-using System;
-using System.Net.Http.Json;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using SmartGraphQLClient.Core.GraphQLRequestExecutor.Base;
 
 namespace SmartGraphQLClient.Core.GraphQLRequestExecutor
 {
-    internal class GraphQLRequestExecutor
+    internal class GraphQLRequestExecutor : GraphQLRequestExecutorBase
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly object? _authorizationService;
-        private readonly HttpClient _httpClient;
         private readonly GraphQLQueryBuilder.GraphQLQueryBuilder _queryBuilder;
-        private readonly JsonSerializerOptions _jsonSerializerOptions =
-            new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() },
-                PropertyNameCaseInsensitive = true,
-            };
-
-        private GraphQLRequestExecutor(
+        
+        public GraphQLRequestExecutor(
             IServiceProvider serviceProvider,
             HttpClient httpClient,
             GraphQLQueryBuilder.GraphQLQueryBuilder queryBuilder,
             Type graphQLClientType)
+            : base(serviceProvider, httpClient, graphQLClientType)
         {
-            _serviceProvider = serviceProvider;
-            _authorizationService = _serviceProvider.GetService(typeof(IGraphQLAuthorizationService<>).MakeGenericType(graphQLClientType));
-            _httpClient = httpClient;
             _queryBuilder = queryBuilder;
-        }
-
-        public static GraphQLRequestExecutor New(
-            IServiceProvider serviceProvider,
-            HttpClient httpClient,
-            GraphQLQueryBuilder.GraphQLQueryBuilder queryBuilder,
-            Type graphQLClientType)
-        {
-            return new(serviceProvider, httpClient, queryBuilder, graphQLClientType);
         }
 
         public Task<T[]> ExecuteToArrayAsync<T>(CancellationToken token)
@@ -74,7 +47,7 @@ namespace SmartGraphQLClient.Core.GraphQLRequestExecutor
             CancellationToken token)
         {
             var value = await ExecuteAsync(queryString, token);
-            var collectionSegment = value.Deserialize(typeof(CollectionSegment<>).MakeGenericType(config.RootType), _jsonSerializerOptions)!;
+            var collectionSegment = value.Deserialize(typeof(CollectionSegment<>).MakeGenericType(config.RootType), JsonSerializerOptions)!;
             var items = collectionSegment.GetType()
                 .GetProperty(nameof(CollectionSegment<object>.Items), BindingFlags.Public | BindingFlags.Instance)!
                 .GetValue(collectionSegment);
@@ -101,7 +74,7 @@ namespace SmartGraphQLClient.Core.GraphQLRequestExecutor
             CancellationToken token)
         {
             var value = await ExecuteAsync(queryString, token);
-            var array = value.Deserialize(config.RootType.MakeArrayType(), _jsonSerializerOptions)!;
+            var array = value.Deserialize(config.RootType.MakeArrayType(), JsonSerializerOptions)!;
 
             var evaluatedArray = LocalCallChainEvaluator.EvaluateArray(array, config.CallChain.GetEvaluateExpressions());
             return (T[])evaluatedArray!;
@@ -113,75 +86,11 @@ namespace SmartGraphQLClient.Core.GraphQLRequestExecutor
             CancellationToken token)
         {
             var value = await ExecuteAsync(queryString, token);
-            var entity = value.Deserialize(config.RootType, _jsonSerializerOptions);
+            var entity = value.Deserialize(config.RootType, JsonSerializerOptions);
             if (entity is null) return default;
 
             var evaluatedEntity = LocalCallChainEvaluator.EvaluateSingle(entity, config.CallChain.GetEvaluateExpressions());
             return (T?)evaluatedEntity;
-        }
-
-        private async Task<JsonElement> ExecuteAsync(
-            string queryString,
-            CancellationToken token)
-        {
-            var response = await ExecuteQueryAsync(queryString, token);
-
-            var root = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: token);
-            var hasErrors = root.TryGetProperty("errors", out var jsonErrors);
-
-            if (hasErrors)
-            {
-                var errors = jsonErrors.Deserialize<GraphQLError[]>(_jsonSerializerOptions)!;
-
-                if (errors.HasAuthorizationError() &&
-                    _authorizationService is not null)
-                {
-                    await InvokeAuthorize(token);
-                    response = await ExecuteQueryAsync(queryString, token);
-                    root = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: token);
-                    hasErrors = root.TryGetProperty("errors", out jsonErrors);
-                }
-            }
-
-            if (hasErrors)
-            {
-                var errors = jsonErrors.Deserialize<GraphQLError[]>(_jsonSerializerOptions)!;
-                throw new GraphQLException(errors);
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            var data = root.GetProperty("data");
-            var enumerator = data.EnumerateObject();
-            enumerator.MoveNext();
-            var value = enumerator.Current.Value;
-
-            return value;
-        }
-
-        private Task InvokeAuthorize(CancellationToken token)
-        {
-            var method = _authorizationService!.GetType()
-                .GetMethods()
-                .Single(m => m.Name == "Authorize" && m.GetParameters().Length == 2);
-
-            return (Task)method.Invoke(_authorizationService, new object[] { _httpClient, token })!;
-        }
-
-        private Task<HttpResponseMessage> ExecuteQueryAsync(string queryString, CancellationToken token)
-        {
-            var queryObject = new
-            {
-                query = queryString
-            };
-
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                Content = new StringContent(JsonSerializer.Serialize(queryObject), Encoding.UTF8, "application/json")
-            };
-
-            return _httpClient.SendAsync(request, token);
         }
     }
 }

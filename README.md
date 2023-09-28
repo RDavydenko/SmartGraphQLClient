@@ -98,13 +98,14 @@ Requests were tested on [HotChocolate](https://github.com/ChilliCream/graphql-pl
 
 ## Features
 | feature's name             | package's version |    |
-|----------------------------|-------------------|----|
-| Build Where-string         | 1.0.0             | ✅ |
-| Build Select-string        | 1.0.0             | ✅ |
-| Build Order-string         | 1.0.0             | ✅ |
-| Offset paging (skip, take) | 1.0.0             | ✅ |
-| Custom arguments           | 1.0.0             | ✅ |
-| Cursor paging              |                   | ❌ |
+|----------------------------|----------------|----|
+| Build Where-string         | 1.0.0          | ✅ |
+| Build Select-string        | 1.0.0          | ✅ |
+| Build Order-string         | 1.0.0          | ✅ |
+| Offset paging (skip, take) | 1.0.0          | ✅ |
+| Custom arguments           | 1.0.0          | ✅ |
+| Execute row query          | 1.1.0          | ✅ |
+| Cursor paging              |                | ❌ |
 
 ## Links
 https://www.nuget.org/packages/SmartGraphQLClient/
